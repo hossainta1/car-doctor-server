@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const jwt = require('jsonwebtoken');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config()
 const app = express();
@@ -34,6 +35,20 @@ async function run() {
         const bookingCollection = client.db('carDoctor').collection('bookings');
 
 
+        //  JWT Authentication
+
+        app.post('/jwt', (req, res) => {
+            const user = req.body;
+            console.log(user);
+
+            const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1hr' });
+            console.log(token);
+            res.send({ token });
+        })
+
+
+
+        //  Servicess section
         app.get('/servicess', async (req, res) => {
             const cursor = serviceCollection.find();
             const result = await cursor.toArray();
